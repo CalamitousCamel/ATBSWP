@@ -12,23 +12,22 @@ phoneRegex= re.compile(r'''(?i)										# note the inline ignorecase function
 							((\D*(x|extension)\D{,3}(?P<ext>\d+)))?	# extension matching. Matches a flexible distance away from the initial phone number to account for differing scentence structure 
 		    			''',re.X)	
 
-emailRegex= re.compile(r'''
-			(\S+\@\S+) 												# matches any non-whitespace character on either side of the @
-			''',re.X)
+emailRegex= re.compile(r'''(\S+\@\S+)''',re.X)						# matches any non-whitespace character on either side of the @
+			
 
 copiedText= str(pyperclip.paste())
 phoneMatch=[]
 emailMatch=[]
 
 for number in phoneRegex.finditer(copiedText):						# this if-mess translates each various phone number match into it's own string (accounting for differing/missing notation) and appends it to a list of phone numbers
-		phoneNum= str(number.group('n1')+'.'+number.group('n2'))
-		if number.group('a') != None:
-			phoneNum = str(number.group('a')+'.'+phoneNum)
-		if number.group('c') != None:
-			phoneNum = str(number.group('c')+'.'+phoneNum)
-		if number.group('ext') !=None:
-			phoneNum += str(' ext.'+number.group('ext'))
-		phoneMatch.append(phoneNum)
+	phoneNum= str(number.group('n1')+'.'+number.group('n2'))
+	if number.group('a'):
+		phoneNum = str(number.group('a')+'.'+phoneNum)
+	if number.group('c'):
+		phoneNum = str(number.group('c')+'.'+phoneNum)
+	if number.group('ext'):
+		phoneNum += str(' ext.'+number.group('ext'))
+	phoneMatch.append(phoneNum)
 
 for email in emailRegex.findall(copiedText):						# finds and appends emails into a list
 	emailMatch.append(email)
