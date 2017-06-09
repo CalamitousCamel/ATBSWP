@@ -12,14 +12,15 @@ phoneRegex:
 # Matches most common extension notation a flexible distance 
   away from the initial phone number
 '''
-phoneRegex= re.compile(r'''(?i)										
-							(?<!\w)(?P<c>\d)?
-							\D?
-							\(?(?P<a>\d{3})?\)?
-							\D?
-							(?P<n1>\d{3})\D?(?P<n2>\d{4})
-							((\D*(x|extension)\D{,3}(?P<ext>\d+)))?
-		    			''',re.X)
+phoneRegex= re.compile(r'''
+	(?i)										
+	(?<!\w)(?P<c>\d)?
+	\D?
+	\(?(?P<a>\d{3})?\)?
+	\D?
+	(?P<n1>\d{3})\D?(?P<n2>\d{4})
+	((\D*(x|extension)\D{,3}(?P<ext>\d+)))?
+''',re.X)
 
 # matches any non-whitespace character on either side of the @
 emailRegex= re.compile(r'''(\S+\@\S+)''',re.X)						
