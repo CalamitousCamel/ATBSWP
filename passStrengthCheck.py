@@ -19,7 +19,8 @@ def passCheck():
 		if digitCheck.search(password) is None:
 			print('Please include at least one digit [0-9] ')
 		if charCheck.search(password) is None:
-			print('Please include at least one special character [!@#$%^&*_-+=?]')
+			print('Please include at least one special character '
+				  '[!@#$%^&*_-+=?]')
 			
 		if len(password) > 7:
 			if lowerCheck.search(password):
@@ -30,7 +31,10 @@ def passCheck():
 							break
 
 
-print('Please enter a password. It must contain both UPPER and lower case letters, have at least one digit and one special character [!@#$%^&*_-+=?]. Your password must also be no less than eight [8] characters long')
+print('Please enter a password. It must contain both UPPERCASE and '
+	  'lowercase letters, have at least one digit and one special '
+	  'character [!@#$%^&*_-+=?]. Your password must also be no less '
+	  'than eight [8] characters long')
 passCheck()
 
 '''

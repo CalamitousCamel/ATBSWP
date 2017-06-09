@@ -2,24 +2,37 @@
 # pulls phone numbers and email addresses from text copied to the clipboard
 
 import pyperclip, re
+'''
+phoneRegex:
+# country code accounting for whitespace
+# spacer
+# 3 digit area code incl. optional bracket notation
+# spacer
+# 7 digit phone number in 2 seperate capture groups
+# Matches most common extension notation a flexible distance 
+  away from the initial phone number
+'''
+phoneRegex= re.compile(r'''(?i)										
+							(?<!\w)(?P<c>\d)?
+							\D?
+							\(?(?P<a>\d{3})?\)?
+							\D?
+							(?P<n1>\d{3})\D?(?P<n2>\d{4})
+							((\D*(x|extension)\D{,3}(?P<ext>\d+)))?
+		    			''',re.X)
 
-phoneRegex= re.compile(r'''(?i)										# note the inline ignorecase function
-							(?<!\w)(?P<c>\d)?						# country code accounting for whitespace
-							\D?										# spacer
-							\(?(?P<a>\d{3})?\)?						# 3 digit area code incl. optional bracket notation
-							\D?								
-							(?P<n1>\d{3})\D?(?P<n2>\d{4})			# 7 digit phone number
-							((\D*(x|extension)\D{,3}(?P<ext>\d+)))?	# extension matching. Matches a flexible distance away from the initial phone number to account for differing scentence structure 
-		    			''',re.X)	
-
-emailRegex= re.compile(r'''(\S+\@\S+)''',re.X)						# matches any non-whitespace character on either side of the @
+# matches any non-whitespace character on either side of the @
+emailRegex= re.compile(r'''(\S+\@\S+)''',re.X)						
 			
 
 copiedText= str(pyperclip.paste())
 phoneMatch=[]
 emailMatch=[]
 
-for number in phoneRegex.finditer(copiedText):						# this if-mess translates each various phone number match into it's own string (accounting for differing/missing notation) and appends it to a list of phone numbers
+'''this if-mess translates each various phone number match into it's own
+string (accounting for differing/missing notation) and appends 
+it to a list of phone numbers'''
+for number in phoneRegex.finditer(copiedText):						
 	phoneNum= str(number.group('n1')+'.'+number.group('n2'))
 	if number.group('a'):
 		phoneNum = str(number.group('a')+'.'+phoneNum)
@@ -29,10 +42,13 @@ for number in phoneRegex.finditer(copiedText):						# this if-mess translates ea
 		phoneNum += str(' ext.'+number.group('ext'))
 	phoneMatch.append(phoneNum)
 
-for email in emailRegex.findall(copiedText):						# finds and appends emails into a list
+# finds and appends emails into a list
+for email in emailRegex.findall(copiedText):						
 	emailMatch.append(email)
 
-allMatch='\nphone numbers found: '+str(len(phoneMatch))+'\n'		# begins each section with a report on how many of each match was found in the text and then pipes a comma delimited string "list" into allMatch
+'''begins each section with a report on how many of each match was
+found in the text and then pipes a comma delimited string "list" to allMatch'''
+allMatch='\nphone numbers found: '+str(len(phoneMatch))+'\n'		
 for n in phoneMatch:
 	allMatch+=n+', '
 
