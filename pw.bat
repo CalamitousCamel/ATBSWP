@@ -1,2 +1,2 @@
-python F:Projects\passLocker.py %*
+python F:Projects\ATBSWP\passLocker.py %*
 @pause
