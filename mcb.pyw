@@ -26,12 +26,15 @@ if os.path.isdir(dataDir) is False:
 mcbShelf = shelve.open(os.path.join(dataDir,'mcb'))
 
 if len(sys.argv) == 3: 
+    # saves clipboard to entered key
     if sys.argv[1].lower() == 'save':
         mcbShelf[sys.argv[2]] = pyperclip.paste()
 
+    # removes shelf storage directory
     elif sys.argv[1].lower() == 'rmv':
         if sys.argv[2].lower() == 'all':
             rmtree(dataDir)
+        # removes only specified key
         elif sys.argv[2].lower() in mcbShelf:
             del mcbShelf[sys.argv[2]]
         else:
@@ -44,7 +47,7 @@ elif len(sys.argv) == 2:
         #calls a cmd window and prints the list of keys
         listKeys = 'current keys: ' + str(list(mcbShelf.keys()))
         subprocess.run(['echo', listKeys,'&', 'pause'],shell=True)
-    
+    # sets clipboard to specified key
     elif sys.argv[1].lower() in mcbShelf:
         pyperclip.copy(mcbShelf[sys.argv[1]])
 
