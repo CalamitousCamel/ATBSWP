@@ -1,4 +1,4 @@
 *.bat
 sampleText.txt
 _pycache_
-./mcbData
+mcbData/
