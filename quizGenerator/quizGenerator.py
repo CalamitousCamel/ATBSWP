@@ -55,7 +55,7 @@ for quizNum in range(3):
                                                   states[questionNum]))
         # writes multiple choice
         for i in range(4):
-            quizFile.write(' %s. %s\n' % ('ABCD'[i], answerOptions[i]))
+            quizFile.write('   %s. %s\n' % ('ABCD'[i], answerOptions[i]))
             quizFile.write('\n')
         answerFile.write(
             '%s. %s\n' % (questionNum + 1,
