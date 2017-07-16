@@ -7,38 +7,51 @@ import sys
 import pyperclip
 import shelve
 import subprocess
+import os
+from shutil import rmtree
 
-Usage = '''Usage: run from mcb.bat\n
-mcb.bat save [keyword]  - saves current clipboard\n
-mcb.bat rmv [keyword]   - removes clipboard associated with that keyword\n
-mcb.bat rmv all         - removes all clipboard associations\n
-mcb.bat [keyword]       - loads clipboard associated with that keyword\n
-mcb.bat list            - lists saved keywords'''
+Usage = ['echo', 'Usage: run from mcb.bat',
+    '&', 'echo', 'mcb.bat save [keyword]  - saves current clipboard',
+    '&', 'echo', 'mcb.bat rmv [keyword]   - removes clipboard associated with that keyword',
+    '&', 'echo', 'mcb.bat rmv all         - removes all clipboard associations',
+    '&', 'echo', 'mcb.bat [keyword]       - loads clipboard associated with that keyword',
+    '&', 'echo', 'mcb.bat list            - lists saved keywords',
+    '&' 'pause']
 
-mcbShelf = shelve.open('mcb')
+dataDir = os.path.join('.', 'mcbData')
 
-if len(sys.argv) == 3 and sys.argv[1].lower == 'save':
-    mcbShelf[sys.argv[2]] = pyperclip.paste()
+if os.path.isdir(dataDir) is False:
+    os.mkdir(dataDir)
 
-elif len(sys.argv) == 3 and sys.argv[1].lower == 'rmv':
-    if sys.argv[2].lower == 'all':
-        mcbShelf = None
-    else:
-        try:
-            del sys.argv[2]
-        except:
-            ['error, key does not exist']
-    continue
+mcbShelf = shelve.open(os.path.join(dataDir,'mcb'))
 
-elif len(sys.argv) == 2 and sys.argv[1].lower == 'list':
-    #calls a cmd window and prints the list for you
-    listKeys = 'current keys:\n' + str(list(mcbShelf.keys()))
-    #TODO
-    subprocess.run(['echo', listKeys,'&', 'pause'])
+if len(sys.argv) == 3: 
+    if sys.argv[1].lower() == 'save':
+        mcbShelf[sys.argv[2]] = pyperclip.paste()
+
+    elif sys.argv[1].lower() == 'rmv':
+        if sys.argv[2].lower() == 'all':
+            rmtree(dataDir)
+        elif sys.argv[2].lower() in mcbShelf:
+            del mcbShelf[sys.argv[2]]
+        else:
+            subprocess.run(['echo', 'error, key does not exist', '&',
+                            'echo', listKeys, '&', 'pause'],
+                            shell=True)
+elif len(sys.argv) == 2:
+
+    if sys.argv[1].lower() == 'list':
+        #calls a cmd window and prints the list of keys
+        listKeys = 'current keys: ' + str(list(mcbShelf.keys()))
+        subprocess.run(['echo', listKeys,'&', 'pause'],shell=True)
+    
+    elif sys.argv[1].lower() in mcbShelf:
+        pyperclip.copy(mcbShelf[sys.argv[1]])
+
+
 
 else:
-    #calls a cmd window and prints the usage of the file for you
-    subprocess.run(['echo', Usage, '&' 'pause'])
+    #calls a cmd window and prints the usage of the file
+    subprocess.run(Usage,shell=True)
 
-
-mcbShelf.close()
+    mcbShelf.close()
