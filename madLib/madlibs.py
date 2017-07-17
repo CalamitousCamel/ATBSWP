@@ -21,15 +21,19 @@ import sys
 import shelve
 
 def saveAs(fileName, default=libFile+timestamp)
-#TODO    saveAs File with deafault being name of libFile+date/Time
+    saveAs File with deafault being name of libFile+date/Time
 
 def checkYN() 
-    ask for Y/N input and return with boolean T/F for repeatability 
-    
+    ask For Y/N input and return with boolean T/F For repeatability 
 
-#TODO open(shelfFile for storing last used searchFolder)
+def askForPath(inputMsg)
+    returns regex fixed path from user input
+    searchFolder = regex to path.abspath(path.join(input()))
+
+
 
 print('**Welcome to madLibs**')
+#TODO open(shelfFile for storing last used searchFolder)
 #TODO
 searchFolder = path.join('pathFromShelFile')
 
@@ -41,13 +45,16 @@ print('searching ' + searchFolder + ' for madLibs files')
 try:
 #TODO
 fileList = regex search searchFolder
+#returns file.txt
+#possible make abspath here 
 
 except #TODO nofile error:
-    print("there don't seem to be any madLib files in" + searchFolder + ". Would you like to specify a different location?")
+    print("there don't seem to be any madLibs files in" + searchFolder + ". Would you like to specify a different location?")
     cont = checkYN()
     print('set new location to default?')
     default = checkYN()
-#TODO searchFolder = regex to path.abspath(path.join(input('please specify a new file location:\n')))
+#TODO 
+    searchFolder = askForPath('please specify a new file location:\n')
     if cont and default and path.isdir(searchFolder) is True:
         print('saving searchFolder as new default location')
 #TODO   open shelve and save settings
@@ -57,24 +64,28 @@ except #TODO nofile error:
         break
 #TODO
 for n in len(fileList):
-    print(str(n+1) + '. ' + fileList[n] + '\n')
-    libFile = input('Enter the number of the file you wish to open:\n' )
+    enumFileList += (str(n+1) + '. ' + fileList[n] + '\n')
+    #possible print index and key instead of making whole new variable
+
+print(enumFileList)
+index = input('Enter the number of the file you wish to open:\n' )
 chwd(searchfolder)
-if path.isdir(path.join)
-mkdir(path.join('.', 'storyFiles')
+libfile =  open(fileList[index]) #need to add this to a path
+if path.isdir(path.join('.', 'storyFiles')) is not True:
+    mkdir(path.join('.', 'storyFiles'))
 copy(libfile) to storyFile
 open(storyFile,-w)
 
-for each regex match (Noun|Adverb|Adjective|Verb):
+for each regex match (Noun|Adverb|Adjective|Verb) in storyFile:
     input('enter a '+ [match]) 
-    write to file regex replace [match] With [input]
+    write to file regex replace [match] With [input()]
     
 print(storyFile)
 print('do you want to save this story?')
 optsave = checkYN()
 
 if optsave is True:
-    fileName = regex to path.abspath(path.join(input('specify a file name or leave blank to save using timestamp: \n'))
+    fileName = askForPath('specify a file name or leave blank to save using timestamp: \n')
         while path.isfile(fileName) is True: 
             fileName = input('please choose another name, ' + fileName + ' is taken: \n')
         saveAs(fileName)
