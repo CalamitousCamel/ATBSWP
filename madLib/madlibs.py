@@ -23,8 +23,19 @@ import shelve
 def saveAs(fileName, default=libFile+timestamp)
     saveAs File with deafault being name of libFile+date/Time
 
-def checkYN() 
-    ask For Y/N input and return with boolean T/F For repeatability 
+
+def checkYN():
+    #asks For Y/N input and returns with boolean T/F For repeatability 
+    check = None
+    while check == None:    
+        check = input().lower()
+        if check == 'y' or check == 'yes':
+            return True
+        elif check == 'n'or check == 'no':
+            return False
+        else:
+            print("This is a 'yes' or 'no' question")
+            check = None
 
 def askForPath(inputMsg)
     returns regex fixed path from user input
@@ -51,17 +62,16 @@ fileList = regex search searchFolder
 except #TODO nofile error:
     print("there don't seem to be any madLibs files in" + searchFolder + ". Would you like to specify a different location?")
     cont = checkYN()
-    print('set new location to default?')
-    default = checkYN()
+    if cont is False:
+        EXIT PROGRAM
 #TODO 
-    searchFolder = askForPath('please specify a new file location:\n')
-    if cont and default and path.isdir(searchFolder) is True:
-        print('saving searchFolder as new default location')
+    searchFolder = input('please specify a new file location:\n')
+    if cont and path.isdir(searchFolder) is True:
+        print('saving' + searchFolder + ' as new default location')
 #TODO   open shelve and save settings
     elif path.isdir(searchFolder) is not True
 #TODO    print warning and retry filepath
-    elif cont is False:
-        break
+
 #TODO
 for n in len(fileList):
     enumFileList += (str(n+1) + '. ' + fileList[n] + '\n')
