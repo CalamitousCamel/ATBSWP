@@ -5,27 +5,6 @@ from os import path, getcwd, chdir, listdir, mkdir
 from datetime import datetime
 import re
 import shelve
-# TODO
-'''
-search dir for .txt file
-if no .txt, ask to change search dir
-ask to and save as default search dir
-regex .txt for match Noun|Adverb|Adjective|Verb
-for each match promt user for [match]
-replace match with user input
-read out new file
-promt user to 'save as' in a  saved story subdir
-use input as filename and save file to story subdir
-'''
-
-'''
-def saveAs(fileName, default=str(libFile + "{:%y-%m-%d_%H.%M}".format(datetime.now()))):
-   pass
-    saveAs File with deafault being name of libFile + date / Time
-    this may be a process of printing the whole story to a variable,
-    then replacing the regex matches with user inputs, then opening
-    it as a new file.
-'''
 
 
 def checkYN():
@@ -90,7 +69,7 @@ while True:
         break
 
 
-# TODO get input for file and make it a path so it can open as a file
+# get input for file and make it a path so it can open as a file
 for _ in fileDict.keys():
     print(_)
 print('Type the name of the file you wish to open')
@@ -102,13 +81,14 @@ while True:
         pass
     print("That selection doesn't seem to be on the list. Please try again")
 
-
+# create a directory for the saved stories
 if path.isdir(path.join('..', 'storyFiles')) is False:
     mkdir(path.join('..', 'storyFiles'))
 story = open(libFile)
 libStory = story.read()
 story.close()
 
+# the actual regex iterator
 for match in lib.finditer(libStory):
     print('enter a(n) ' + str(match.group(1)) + ': ', end='')
     libStory = lib.sub(input(), libStory, count=1)
@@ -122,17 +102,3 @@ if optsave is True:
     storyFile = open('..\\storyFiles\\' + fileName + '.txt', 'w')
     storyFile.write(libStory)
     storyFile.close()
-
-
-'''A vacation is when you take a trip to some |Adjective| place with your
-|Adjective| family. Usually you go to some place that is near a/an |Noun|
-or up on a/an |Noun|. A good vacation place is one where you can ride
-|Plural Noun|, play |Adverb| or go hunting for |Plural Noun|. I like
-to spend my time |Verb| or |Verb|. When parents go on a vacation, they
-spend their time eating three |Plural Noun| a day, and fathers play golf,
-and mothers sit around |Verb ending in -ing|. Last summer, my little brother
-fell in a/an |Noun| and got poison |Noun (plant)| all over his |Body Part|.
-My family is going to go to (the) |Noun|, and I will practice |Verb|. Parents
-need vacations more than kids because parents are always very |Adjective| and
-because they have to work |Number| hours every day all year making enough
-|Plural Noun| to pay for the vacation.'''
