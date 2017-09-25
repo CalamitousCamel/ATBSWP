@@ -1,8 +1,10 @@
 #!python3
 '''Madlibs takes in specifically formatted .txt files and prompts the user
     to generate a mad lib story'''
-
-
+from os import path, getcwd, chdir, listdir, mkdir
+from datetime import datetime
+import re
+import shelve
 # TODO
 '''
 search dir for .txt file
@@ -11,24 +13,25 @@ ask to and save as default search dir
 regex .txt for match Noun|Adverb|Adjective|Verb
 for each match promt user for [match]
 replace match with user input
-read out new file 
+read out new file
 promt user to 'save as' in a  saved story subdir
-use input as filename and save file to story subdir 
+use input as filename and save file to story subdir
 '''
-from os import path, getcwd, chdir
-import re
-import sys
-import shelve
 
-
-def saveAs(fileName, default=libFile + timestamp)
+'''
+def saveAs(fileName, default=str(libFile + "{:%y-%m-%d_%H.%M}".format(datetime.now()))):
+   pass
     saveAs File with deafault being name of libFile + date / Time
+    this may be a process of printing the whole story to a variable,
+    then replacing the regex matches with user inputs, then opening
+    it as a new file.
+'''
 
 
 def checkYN():
     # asks For Y/N input and returns with boolean T/F For repeatability
     check = None
-    while check == None:
+    while check is None:
         check = input().lower()
         if check == 'y' or check == 'yes':
             return True
@@ -39,68 +42,97 @@ def checkYN():
             check = None
 
 
-def askForPath(inputMsg)
-#    returns regex fixed path from user input
-#    searchFolder = regex to path.abspath(path.join(input()))
-    while path.isdir(path) is False: 
-#TODO   prompt user for legit path
+def askForPath(inputMsg):
+    print(inputMsg)
+    newPath = input()
+    while path.isdir(newPath) is False:
         print('please enter a valid path')
-        searchFolder = input().split('/')
-    defSettings['searchFolder'] = searchFolder
+        newPath = input()
+    return path.abspath(newPath)
 
+
+lib = re.compile(r'\|(.*?)\|')
 
 # TODO if exist, open defaults file. if no, create one in CWD
-print('**Welcome to madLibs**')
-defSettings = shelve.open('defaults')
-searchFolder = path.join(defaults['searchPath'])
+print('\n**Welcome to madLibs**\n**********************\n')
+defaultPath = shelve.open('.\\settings\\defaults')
+try:
+    searchFolder = defaultPath['searchFolder']
+    defaultPath.close()
 # If a default is not set yet
-if len(searchFolder) < 1:
+except KeyError:
     searchFolder = getcwd()
-print('searching ' + searchFolder + ' for madLibs files')
+chdir(searchFolder)
+print('The madLib files in ' + searchFolder + ' are:')
 
-try: regex all txt files in searchFolder looking for a header the specifies
-to madlibs that the text file is a madlibs file 
-    
-except  # TODO nofile error:
-print("there don't seem to be any madLibs files in" + searchFolder +
-      ". Would you like to specify a different location?")
-cont = checkYN()
-if cont is False:
-    EXIT PROGRAM
-# TODO
-    searchFolder = input('please specify a new file location:\n')
-    if cont and path.isdir(searchFolder) is True:
-        print('saving' + searchFolder + ' as new default location')
-# TODO   open shelve and save settings
-    elif path.isdir(searchFolder) is not True
-# TODO    print warning and retry filepath
+# creates a dictionary that stores filenames w/out .txt for user ease
+while True:
+    fileDict = {}
+    for file in listdir(searchFolder):
+        if file.endswith('.txt'):
+            fileDict[file[0:-4]] = file
 
-# TODO
-for n in len(fileList):
-    enumFileList += (str(n + 1) + '. ' + fileList[n] + '\n')
-    # possible print index and key instead of making whole new variable
+    if fileDict == {}:
+        print("...there don't seem to be any madLibs files in " +
+              searchFolder +
+              ". Would you like to specify a different location?")
+        cont = checkYN()
+        if cont is False:
+            print('EXITING PROGRAM')
+            exit()
+        elif cont is True:
+            searchFolder = askForPath('please specify a new file location:')
+            print('saving ' + searchFolder + ' as new default location')
+            defaultPath['searchFolder'] = searchFolder
+            defaultPath.close()
+            chdir(searchFolder)
+    else:
+        break
 
-print(enumFileList)
-index = input('Enter the number of the file you wish to open:\n')
-chwd(searchfolder)
-libfile = open(fileList[index])  # need to add this to a path
-if path.isdir(path.join('.', 'storyFiles')) is not True:
-    mkdir(path.join('.', 'storyFiles'))
-copy(libfile) to storyFile
-open(storyFile, -w)
 
-for each regex match(Noun | Adverb | Adjective | Verb) in storyFile:
-    input('enter a ' + [match])
-    write to file regex replace[match] With[input()]
+# TODO get input for file and make it a path so it can open as a file
+for _ in fileDict.keys():
+    print(_)
+print('Type the name of the file you wish to open')
+while True:
+    try:
+        libFile = path.abspath(fileDict[input()])
+        break
+    except KeyError:
+        pass
+    print("That selection doesn't seem to be on the list. Please try again")
 
-print(storyFile)
-print('do you want to save this story?')
+
+if path.isdir(path.join('..', 'storyFiles')) is False:
+    mkdir(path.join('..', 'storyFiles'))
+story = open(libFile)
+libStory = story.read()
+story.close()
+
+for match in lib.finditer(libStory):
+    print('enter a(n) ' + str(match.group(1)) + ': ', end='')
+    libStory = lib.sub(input(), libStory, count=1)
+
+print(libStory)
+print('\ndo you want to save this story?')
 optsave = checkYN()
 
 if optsave is True:
-    fileName = askForPath(
-        'specify a file name or leave blank to save using timestamp: \n')
-        while path.isfile(fileName) is True:
-            fileName = input('please choose another name, ' +
-                             fileName + ' is taken: \n')
-        saveAs(fileName)
+    fileName = "{:%y-%m-%d_%H.%M}".format(datetime.now())
+    storyFile = open('..\\storyFiles\\' + fileName + '.txt', 'w')
+    storyFile.write(libStory)
+    storyFile.close()
+
+
+'''A vacation is when you take a trip to some |Adjective| place with your
+|Adjective| family. Usually you go to some place that is near a/an |Noun|
+or up on a/an |Noun|. A good vacation place is one where you can ride
+|Plural Noun|, play |Adverb| or go hunting for |Plural Noun|. I like
+to spend my time |Verb| or |Verb|. When parents go on a vacation, they
+spend their time eating three |Plural Noun| a day, and fathers play golf,
+and mothers sit around |Verb ending in -ing|. Last summer, my little brother
+fell in a/an |Noun| and got poison |Noun (plant)| all over his |Body Part|.
+My family is going to go to (the) |Noun|, and I will practice |Verb|. Parents
+need vacations more than kids because parents are always very |Adjective| and
+because they have to work |Number| hours every day all year making enough
+|Plural Noun| to pay for the vacation.'''
