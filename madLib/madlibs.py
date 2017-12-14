@@ -32,7 +32,7 @@ def askForPath(inputMsg):
 
 lib = re.compile(r'\|(.*?)\|')
 
-# TODO if exist, open defaults file. if no, create one in CWD
+# if exist, open defaults file. if no, create one in CWD
 print('\n**Welcome to madLibs**\n**********************\n')
 defaultPath = shelve.open('.\\settings\\defaults')
 try:
