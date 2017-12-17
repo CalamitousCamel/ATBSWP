@@ -8,8 +8,8 @@ import pyperclip
 
 if len(argv) > 1:
     #get address from command line
-    addr = ''.join(argv[1:])
+    addr = ' '.join(argv[1:]) + "*"
 else:
-    addr = pyperclip.paste()
+    addr = pyperclip.paste() + "*"
 
 webbrowser.open('https://www.google.com/maps/place/' + addr)
